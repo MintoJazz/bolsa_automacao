@@ -1,0 +1,11 @@
+{
+    // A INSTRUÇÃO MAIS IMPORTANTE:
+    // Diz ao Pylance (analisador de código) para olhar nesta pasta
+    // extra em busca de bibliotecas e stubs.
+    "python.analysis.extraPaths": [
+        "./.venv/lib/python3.13/site-packages"
+    ],
+
+    // Recomendado: Garante que o VS Code use o analisador mais moderno.
+    "python.languageServer": "Pylance"
+}

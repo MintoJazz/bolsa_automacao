@@ -1,0 +1,18 @@
+{
+    "wifi": {
+        "ssid": "",
+        "pswd": ""
+    },
+    "mqtt" : {
+        "client_id": "",
+        "broker": "",
+        "port": "",
+        "topic": ""
+    }, 
+    "pinos" : {
+        "dht" : 2,
+        "sda" : 3,
+        "scl" : 4,
+        "onewire" : 5
+    }
+}
