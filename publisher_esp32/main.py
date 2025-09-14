@@ -1,7 +1,7 @@
-from modulos.conexao import conectar_mqtt, conectar_wifi, ajustar_hora_ntp, timestamp
+from modulos.conexao import conectar_wifi, ajustar_hora_ntp, timestamp
 from modulos.sensores import temperatura_ds18b20, pressao_bmp180, umidade_dht22
 from modulos.lib.machine_i2c_lcd import I2cLcd
-from machine import I2C, Pin
+from machine import I2C, Pin, reset
 from ujson import load, dumps
 from time import sleep
 
@@ -19,7 +19,10 @@ try:
         freq = 100000
     )
     enderecos_dispositivos = bus_i2c.scan()
+except Exception as e:
+    print(f"Deu erro no I2C: {e}")
 
+try:
     print("Ligando LCD")
     lcd = I2cLcd(
         bus_i2c, 
@@ -29,16 +32,14 @@ try:
     )
     lcd.clear()
     lcd.putstr("LCD e I2C Ok!")
-
-    print("Criando BMP180...")
-    sensor.append(
-        pressao_bmp180(
-            i2c_bus = bus_i2c
-        )
-    )
-
 except Exception as e:
-    print(f"Deu erro no I2C: {e}")
+    print(f"Deu erro no LCD: {e}")
+
+sensor.append(
+    pressao_bmp180(
+        i2c_bus = bus_i2c
+    )
+)
 
 sensor.append(
     umidade_dht22(
@@ -52,41 +53,54 @@ sensor.append(
     )
 )
 
-conectar_wifi(
-    lcd,
-    assets['wifi']['ssid'],
-    assets['wifi']['pswd']
-)
+try:
+    lcd.clear()
+    lcd.putstr("Conectando WiFi...")
+    lcd.putstr(f"\n{conectar_wifi(assets['wifi']['ssid'],assets['wifi']['pswd'])}")
+    sleep(2)
+except Exception as e:
+    lcd.putstr(f"\n{e}")
+    sleep(3)
+    reset()
 
-ajustar_hora_ntp(lcd)
+try:
+    lcd.clear()
+    lcd.putstr("Sincronizando hora...")
+    lcd.putstr(f"\n{ajustar_hora_ntp()}")
+    sleep(2)
+except Exception as e:
+    lcd.putstr(f"\n{e}")
+    sleep(3)
 
-conectar_mqtt(
-    lcd,
-    assets['mqtt']['client_id'],
-    assets['mqtt']['broker'],
-    assets['mqtt']['port']
-)
-
-cliente = cliente_mqtt(
-    lcd = lcd,
-    broker = assets['mqtt']['broker'],
-    id_cliente = assets['mqtt']['id_cliente']
-)
+try:
+    lcd.clear()
+    lcd.putstr('Conectando MQTT...')
+    cliente = cliente_mqtt(
+        broker = assets['mqtt']['broker'],
+        id_cliente = assets['mqtt']['id_cliente']
+    )
+    lcd.putstr('\nMQTT Conectado!')
+    sleep(2)
+except Exception as e:
+    lcd.putstr(f"\n{e}")
+    sleep(3)
+    reset()
 
 while True:
-    lcd.clear()
-    lcd.putstr('Medicoes')
     json_pub = {'timestamp':timestamp()}
+
+    output = 'Medicoes'
 
     for i in range(0,len(sensor)):
         json_pub[sensor[i].tipo] = sensor[i].ler_sensor()
-        lcd.move_to(0,(i+1))
-        lcd.putstr(f'{sensor[i].tipo}: {json_pub[sensor[i].tipo]}')
+        output += f'\n{sensor[i].tipo}: {json_pub[sensor[i].tipo]}'
         sleep(0.1)
+
+    lcd.clear()
+    lcd.putstr(output)
     
     cliente.publicar(
         mensagem = dumps(json_pub),
         topico = assets['mqtt']['topico']
     )
-    print(json_pub)
     sleep(0.5)

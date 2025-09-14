@@ -4,9 +4,7 @@ from machine import reset, RTC
 from ntp import settime
 from umqtt.simple import MQTTClient
 
-def conectar_wifi(lcd, ssid, pswd):
-    lcd.clear()
-    lcd.putstr("Conectando WiFi...")
+def conectar_wifi(ssid, pswd):
     sta_if = WLAN(STA_IF)
 
     if not sta_if.isconnected():
@@ -17,42 +15,22 @@ def conectar_wifi(lcd, ssid, pswd):
             sleep(1)
             timeout -= 1
 
-    if sta_if.isconnected():
-        lcd.putstr("\nConectado!")
-        sleep(1)
-    else:
-        lcd.putstr("\nFalha no WiFi!")
-        sleep(3)
-        reset()
-
-def ajustar_hora_ntp(lcd):
-    lcd.clear()
-    lcd.putstr("Sincronizando hora...")
+    if not sta_if.isconnected(): # A conexão falhou
+        sta_if.active(False) # Desliga a interface para economizar energia
+        raise Exception('Falha no WiFi!')
     
+    return 'Conectado!'
+
+def ajustar_hora_ntp():
     try:
         settime()
-        # Lembrete: ajustar para o fuso UTC-3 (Brasília)
         agora_utc = time()
         fuso_horario_offset = -3 * 3600
         tm = localtime(agora_utc + fuso_horario_offset)
         RTC().datetime((tm[0], tm[1], tm[2], tm[6], tm[3], tm[4], tm[5], 0))
-        lcd.putstr("\nHora ajustada!")
+        return 'Hora ajustada!'
     except Exception as e:
-        lcd.putstr("\nErro NTP!")
-    time.sleep(1)
-
-def conectar_mqtt(lcd, client_id, mqtt_broker, mqtt_port):
-    lcd.clear()
-    lcd.putstr("Conectando MQTT...")
-    client = MQTTClient(client_id, mqtt_broker, port=mqtt_port)
-    try:
-        client.connect()
-        lcd.putstr("\nMQTT Conectado!")
-        time.sleep(1)
-    except OSError as e:
-        lcd.putstr("\nFalha no MQTT!")
-        time.sleep(3)
-        reset()
+        raise Exception('Erro NTP!')
 
 def timestamp():
     tupla_data = RTC().datetime()

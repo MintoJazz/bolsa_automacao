@@ -1,18 +1,17 @@
 {
     "wifi": {
-        "ssid": "",
+        "ssid": "Wokwi-GUEST",
         "pswd": ""
     },
     "mqtt" : {
-        "client_id": "",
-        "broker": "",
-        "port": "",
-        "topic": ""
-    }, 
+        "id_cliente": "esp32-c3-supermini-projeto-unique",
+        "broker": "broker.hivemq.com",
+        "topico": "MintoJazz/JaazielPontoMqtt/teste"
+    },
     "pinos" : {
-        "dht" : 2,
-        "sda" : 3,
-        "scl" : 4,
-        "onewire" : 5
+        "dht" : 26,
+        "sda" : 14,
+        "scl" : 27,
+        "onewire" : 13
     }
 }
