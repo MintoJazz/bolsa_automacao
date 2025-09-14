@@ -1,5 +1,6 @@
 from modulos.conexao import conectar_wifi, ajustar_hora_ntp, timestamp
 from modulos.sensores import temperatura_ds18b20, pressao_bmp180, umidade_dht22
+from modulos.interface import cliente_mqtt
 from modulos.lib.machine_i2c_lcd import I2cLcd
 from machine import I2C, Pin, reset
 from ujson import load, dumps
