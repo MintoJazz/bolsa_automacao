@@ -88,13 +88,17 @@ except Exception as e:
     reset()
 
 while True:
-    json_pub = {'timestamp':timestamp()}
+    json_pub = {
+        'timestamp':timestamp(),
+        'Medições': []
+    }
 
     output = 'Medicoes'
 
     for i in range(0,len(sensor)):
-        json_pub[sensor[i].tipo] = sensor[i].ler_sensor()
-        output += f'\n{sensor[i].tipo}: {json_pub[sensor[i].tipo]}'
+        sensor[i].ler_sensor()
+        json_pub['Medições'].append(sensor[i].empacotar())
+        output += f'\n{sensor[i].tipo[0:4]}: {sensor[i].leitura:.1f}'
         sleep(0.1)
 
     lcd.clear()
