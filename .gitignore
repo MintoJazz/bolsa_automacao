@@ -1,0 +1,20 @@
+# Ambientes Virtuais
+venv/
+.venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Hardware
+*-backups/
+*.fp-info-cache
+
+# Configurações Sensíveis
+config.json
+.env
