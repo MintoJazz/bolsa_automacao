@@ -2,7 +2,7 @@
     "broker": "broker.hivemq.com",
     "porta": 1883,
     "topicos": [
-        "MintoJazz/JaazielPontoMqtt/teste"
+        "ifrsrg/automacao/projetoCasTracker/publisher"
     ],
     "client_id": "MintoJazz"
 }

@@ -113,7 +113,7 @@ except Exception as e:
     sleep(3)
     reset()
 
-lcd.imprimir('Medicoes: ')
+lcd.imprimir('Medicoes')
 
 while True:
     json_pub = {

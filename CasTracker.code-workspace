@@ -1,0 +1,36 @@
+{
+	"folders": [
+		{
+			"name": "⚡ Firmware (ESP32)",
+			"path": "firmware"
+		},
+		{
+			"name": "🐍 Backend (Server)",
+			"path": "backend"
+		},
+		{
+			"name": "🔌 Hardware (KiCad)",
+			"path": "hardware"
+		},
+		{
+			"name": "🗃️ Database",
+			"path": "database"
+		},
+		{
+			"name": "⚙️ Root (Configs)",
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
+		"python.analysis.extraPaths": [
+			"${workspaceFolder}/venv/lib/python3.10/site-packages"
+		],
+		"files.exclude": {
+			"**/.git": true,
+			"**/.DS_Store": true,
+			"**/__pycache__": true,
+			"**/*.pyc": true
+		}
+	}
+}
